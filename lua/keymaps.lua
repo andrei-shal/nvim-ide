@@ -33,29 +33,26 @@ map("n", "<leader>ca", vim.lsp.buf.code_action)
 -- Выбрать
 map("i", "<Tab>", function()
   if blink.is_visible() then
-    pcall(blink.accept())
-    return ""
+    blink.accept()
   else
-    return "<Tab>"
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Tab>", true, true, true), "n", false)
   end
-end, { expr = true })
+end)
 
 -- Следующий
 map("i", "<Down>", function()
   if blink.is_visible() then
-    pcall(blink.select_next())
-    return ""
+    blink.select_next()
   else
-    return "<Down>"
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Down>", true, true, true), "n", false)
   end
-end, { expr = true })
+end)
 
 -- Предыдущий
 map("i", "<Up>", function()
   if blink.is_visible() then
-    pcall(blink.select_prev())
-    return ""
+    blink.select_prev()
   else
-    return "<Up>"
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Up>", true, true, true), "n", false)
   end
-end, { expr = true })
+end)
