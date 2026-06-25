@@ -125,18 +125,13 @@ map("n", "<leader>ec", "<cmd>Neotree close<cr>", { desc = "Закрыть" })
 -- Вкладки bufferline
 
 -- Открыть вкладку левее
-map("n", "<leader><Left>", "<cmd>BufferLineCyclePrev<cr>")
+map("n", "<leader><Left>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Предыдущая вкладка" })
 
 -- Открыть вкладку правее
-map("n", "<leader><Right>", "<cmd>BufferLineCycleNext<cr>")
+map("n", "<leader><Right>", "<cmd>BufferLineCycleNext<cr>", { desc = "Следующая вкладка" })
 
 -- Закрыть вкладку
-map("n", "<leader>x", "<cmd>bdelete<cr>")
-
--- Закрыть все вкладки
-map("n", "<leader>xa", function()
-  vim.cmd("silent! %bd|e#|bd#")
-end, { desc = "Закрыть все вкладки" })
+map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "Закрыть вкладку" })
 
 -- Закрыть все вкладки кроме выбранной
-map("n", "<leader>xo", "<cmd>BufferLineCloseOthers<cr>")
+map("n", "<leader>xo", "<cmd>BufferLineCloseOthers<cr>", { desc = "Закрыть все кроме текущей" })
