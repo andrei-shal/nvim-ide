@@ -28,3 +28,12 @@ opt.signcolumn = "yes"
 
 -- Системный буфер обмена
 opt.clipboard = "unnamedplus"
+
+-- Настройка горячего отображения ошибок
+vim.diagnostic.config({
+    virtual_text = true,
+    signs = true,
+    underline = true,
+    update_in_insert = true,
+    severity_sort = true,
+})
