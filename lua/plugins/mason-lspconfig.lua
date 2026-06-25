@@ -3,7 +3,8 @@ return {
   opts = {
     ensure_installed = {
       "clangd",
-      "pyright"
+      "pyright",
+      "jdtls"
     }
   },
   dependencies = {
