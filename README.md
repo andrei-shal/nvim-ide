@@ -16,9 +16,9 @@ Neovim-конфигурация с LSP, автодополнением, файл
 | [lazy.nvim](https://github.com/folke/lazy.nvim) | Менеджер плагинов |
 | [blink.cmp](https://github.com/Saghen/blink.cmp) | Автодополнение (LSP, path, snippets, buffer) |
 | [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Управление парсерами и запросами |
-| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Конфигурации LSP-клиентов |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Конфигурации LSP-клиентов (новый API `vim.lsp.enable`) |
 | [mason.nvim](https://github.com/mason-org/mason.nvim) | Установщик LSP-серверов |
-| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Связка Mason и lspconfig |
+| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Связка Mason и nvim-lspconfig |
 | [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | Файловое дерево |
 | [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Панель вкладок |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Нечёткий поиск |
@@ -107,11 +107,33 @@ nvim --headless "+Lazy! sync" +qa
 
 ## LSP-серверы
 
-Добавь серверы в `ensure_installed` в `lua/plugins/mason-lspconfig.lua`. Они автоматически установятся через Mason и включатся через `vim.lsp.enable()`.
+Серверы устанавливаются через Mason: добавь название в `ensure_installed` в `lua/plugins/mason-lspconfig.lua`.
+
+Включаются через `vim.lsp.enable()` в `lua/plugins/lspconfig.lua`. Там же настраиваются специфичные параметры — например, `JDTLS_JVM_ARGS` для Lombok.
+
+### Текущие серверы
+
+| Язык | Сервер | Особенности |
+|------|--------|-------------|
+| Java | `jdtls` | Lombok-поддержка через `-javaagent` (Mason-пакет включает lombok.jar) |
+| Python | `pyright` | — |
+| C/C++ | `clangd` | — |
+
+### Lombok
+
+JDTLS работает с Lombok через `-javaagent`. Mason при установке jdtls автоматически скачивает `lombok.jar` в каталог пакета. В конфиге lspconfig выставляется `JDTLS_JVM_ARGS`, который встроенный конфиг jdtls конвертирует в `--jvm-arg=-javaagent:...`.
+
+Если используешь Lombok в проекте, не забудь добавить зависимость в `pom.xml` или `build.gradle` — это нужно для компиляции, а LSP-поддержка работает отдельно.
 
 ## Поддержка языков
 
-Парсеры treesitter предустановлены для `lua`, `vim` и `vimdoc`. Установить другие -- `:TSInstall <язык>`.
+Парсеры treesitter предустановлены для:
+- `lua`, `vim`, `vimdoc`
+- `python`
+- `c`, `cpp`
+- `java`
+
+Установить другие — `:TSInstall <язык>`.
 
 ## Интерфейс
 
