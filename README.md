@@ -1,118 +1,118 @@
-# nvim-config
+# nvim-ide
 
-Neovim configuration with LSP, completion, file tree, Git integration, and Russian-localized UI.
+Neovim-конфигурация с LSP, автодополнением, файловым деревом, Git-интеграцией и русским интерфейсом.
 
-## Requirements
+## Требования
 
 - Neovim >= 0.12
-- `tar` and `curl` in PATH (for treesitter parser installation)
-- C compiler (for treesitter parser compilation)
-- [Nerd Font](https://www.nerdfonts.com/) (for icons in lualine, blink.cmp, neo-tree, bufferline)
+- `tar` и `curl` в PATH (для установки парсеров treesitter)
+- C-компилятор (для сборки парсеров treesitter)
+- [Nerd Font](https://www.nerdfonts.com/) (для иконок в lualine, blink.cmp, neo-tree, bufferline)
 
-## Plugins
+## Плагины
 
-| Plugin | Purpose |
-|--------|---------|
-| [lazy.nvim](https://github.com/folke/lazy.nvim) | Plugin manager |
-| [blink.cmp](https://github.com/Saghen/blink.cmp) | Autocompletion (LSP, path, snippets, buffer) |
-| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Parser management and queries |
-| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | LSP client configurations |
-| [mason.nvim](https://github.com/mason-org/mason.nvim) | LSP server installer |
-| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Bridge between Mason and lspconfig |
-| [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | File tree explorer |
-| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Tabline with buffer management |
-| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Fuzzy finder |
-| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git decorations in the gutter |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Statusline |
-| [which-key.nvim](https://github.com/folke/which-key.nvim) | Keybinding help popup |
-| [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Auto-close brackets and quotes |
-| [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Snippet collection |
+| Плагин | Назначение |
+|--------|------------|
+| [lazy.nvim](https://github.com/folke/lazy.nvim) | Менеджер плагинов |
+| [blink.cmp](https://github.com/Saghen/blink.cmp) | Автодополнение (LSP, path, snippets, buffer) |
+| [nvim-treesitter](https://github.com/nvim-treesitter/nvim-treesitter) | Управление парсерами и запросами |
+| [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) | Конфигурации LSP-клиентов |
+| [mason.nvim](https://github.com/mason-org/mason.nvim) | Установщик LSP-серверов |
+| [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Связка Mason и lspconfig |
+| [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | Файловое дерево |
+| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Панель вкладок |
+| [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Нечёткий поиск |
+| [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git-декорации в gutter |
+| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Строка состояния |
+| [which-key.nvim](https://github.com/folke/which-key.nvim) | Подсказки по хоткеям |
+| [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Авто-закрытие скобок и кавычек |
+| [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Коллекция сниппетов |
 
-## Keybindings
+## Хоткеи
 
-Leader key is `Space`.
+Лидер-клавиша -- `Space`.
 
-### File operations
+### Файлы
 
-| Key | Action |
-|-----|--------|
-| `<leader>w` | Save file |
-| `<leader>q` | Close window |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>w` | Сохранить файл |
+| `<leader>q` | Закрыть окно |
 
 ### LSP
 
-| Key | Action |
-|-----|--------|
-| `<leader>ld` | Go to definition |
-| `<leader>lr` | Find references |
-| `<leader>d` | Show documentation (hover) |
-| `<leader>ln` | Rename symbol |
-| `<leader>la` | Code actions |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>ld` | Перейти к определению |
+| `<leader>lr` | Найти использования |
+| `<leader>d` | Показать документацию |
+| `<leader>ln` | Переименовать |
+| `<leader>la` | Действия с кодом |
 
-### Search (Telescope)
+### Поиск (Telescope)
 
-| Key | Action |
-|-----|--------|
-| `<leader>ff` | Find files |
-| `<leader>fg` | Live grep |
-| `<leader>fb` | Open buffers |
-| `<leader>fh` | Help tags |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>ff` | Найти файл |
+| `<leader>fg` | Поиск по тексту |
+| `<leader>fb` | Открытые буферы |
+| `<leader>fh` | Справка |
 
 ### Git (Gitsigns)
 
-| Key | Action |
-|-----|--------|
-| `<leader>hs` | Stage hunk |
-| `<leader>hr` | Reset hunk |
-| `<leader>hS` | Stage buffer |
-| `<leader>hR` | Reset buffer |
-| `<leader>hp` | Preview hunk diff |
-| `<leader>h<Down>` | Next hunk |
-| `<leader>h<Up>` | Previous hunk |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>hs` | Добавить изменение |
+| `<leader>hr` | Откатить изменение |
+| `<leader>hS` | Добавить весь файл |
+| `<leader>hR` | Откатить весь файл |
+| `<leader>hp` | Показать изменения |
+| `<leader>h<Down>` | Следующее изменение |
+| `<leader>h<Up>` | Предыдущее изменение |
 
-### File tree (Neo-tree)
+### Файловое дерево (Neo-tree)
 
-| Key | Action |
-|-----|--------|
-| `<leader>e` | Open file tree |
-| `<leader>ec` | Close file tree |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>e` | Открыть проводник |
+| `<leader>ec` | Закрыть проводник |
 
-### Tabs (Bufferline)
+### Вкладки (Bufferline)
 
-| Key | Action |
-|-----|--------|
-| `<leader><Left>` | Previous tab |
-| `<leader><Right>` | Next tab |
-| `<leader>x` | Close tab |
-| `<leader>xo` | Close all tabs except current |
+| Клавиша | Действие |
+|---------|----------|
+| `<leader><Left>` | Предыдущая вкладка |
+| `<leader><Right>` | Следующая вкладка |
+| `<leader>x` | Закрыть вкладку |
+| `<leader>xo` | Закрыть все кроме текущей |
 
-### Completion (blink.cmp)
+### Автодополнение (blink.cmp)
 
-| Key | Action |
-|-----|--------|
-| `Tab` | Accept completion |
-| `Enter` | Accept completion |
-| `Down` | Next item |
-| `Up` | Previous item |
-| `Esc` | Cancel completion |
+| Клавиша | Действие |
+|---------|----------|
+| `Tab` | Принять вариант |
+| `Enter` | Принять вариант |
+| `Down` | Следующий вариант |
+| `Up` | Предыдущий вариант |
+| `Esc` | Закрыть меню |
 
-## Installation
+## Установка
 
 ```bash
-git clone https://github.com/andreishal/nvim-config.git ~/.config/nvim
+git clone https://github.com/andrei-shal/nvim-ide.git ~/.config/nvim
 nvim --headless "+Lazy! sync" +qa
 ```
 
-On first start, lazy.nvim will bootstrap itself and install all plugins. Neo-tree opens automatically. Press `?` in Neo-tree for help, or press `<Space>e` to focus it.
+При первом запуске lazy.nvim сам установится и загрузит все плагины. Neo-tree откроется автоматически. Нажми `?` внутри Neo-tree для справки или `<Space>e` для перехода в него.
 
-## LSP servers
+## LSP-серверы
 
-Add servers to `ensure_installed` in `lua/plugins/mason-lspconfig.lua`. They will be installed automatically by Mason and enabled via `vim.lsp.enable()`.
+Добавь серверы в `ensure_installed` в `lua/plugins/mason-lspconfig.lua`. Они автоматически установятся через Mason и включатся через `vim.lsp.enable()`.
 
-## Language support
+## Поддержка языков
 
-Treesitter parsers are pre-installed for `lua`, `vim`, and `vimdoc`. Install more with `:TSInstall <language>`.
+Парсеры treesitter предустановлены для `lua`, `vim` и `vimdoc`. Установить другие -- `:TSInstall <язык>`.
 
-## UI Language
+## Интерфейс
 
-Interface labels and tooltips are in Russian.
+Все подписи и подсказки на русском языке.
