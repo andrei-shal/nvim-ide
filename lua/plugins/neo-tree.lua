@@ -11,22 +11,24 @@ return {
     close_if_last_window = true,
     filesystem = {
       follow_current_file = {
-        enable = true,
-        leave_dirs_open = false,
+        enabled = true
       },
-      use_libuv_file_watcher = true,
+      use_libuv_file_watcher = true
     },
-    buffers = {
-      follow_current_file = {
-        enable = true
-      }
-    },
-    event_handlers = {
-      {
-        event = "file_opened",
-        handler = function()
-          require("neo-tree.command").execute({ action = "show", reveal = true })
-        end
+
+    default_component_configs = {
+      git_status = {
+        symbols = {
+          added = "+",
+          modified = "~",
+          deleted = "-",
+          renamed = ">",
+          untracked = "?",
+          ignored = "!",
+          unstaged = "*",
+          staged = "✓",
+          conflict = "x"
+        }
       }
     }
   }
