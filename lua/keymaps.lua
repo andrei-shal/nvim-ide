@@ -122,16 +122,52 @@ map("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "Проводник" })
 -- Закрыть
 map("n", "<leader>ec", "<cmd>Neotree close<cr>", { desc = "Закрыть" })
 
--- Вкладки bufferline
+-- Вкладки
 
--- Открыть вкладку левее
-map("n", "<leader><Left>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Предыдущая вкладка" })
+-- Предыдущий буфер
+map("n", "<leader><Left>", "<cmd>bprevious<cr>", { desc = "Предыдущий буфер" })
 
--- Открыть вкладку правее
-map("n", "<leader><Right>", "<cmd>BufferLineCycleNext<cr>", { desc = "Следующая вкладка" })
+-- Следующий буфер
+map("n", "<leader><Right>", "<cmd>bnext<cr>", { desc = "Следующий буфер" })
 
--- Закрыть вкладку
-map("n", "<leader>x", "<cmd>bdelete<cr>", { desc = "Закрыть вкладку" })
+-- Закрыть буфер
+map("n", "<leader>x", function()
+  local bufnr = vim.api.nvim_get_current_buf()
 
--- Закрыть все вкладки кроме выбранной
-map("n", "<leader>xo", "<cmd>BufferLineCloseOthers<cr>", { desc = "Закрыть все кроме текущей" })
+  -- Собираем листированные буферы через vim.fn
+  local listed = {}
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.fn.buflisted(b) == 1 then
+      table.insert(listed, b)
+    end
+  end
+
+  if #listed <= 1 then
+    -- Последний буфер: создаём пустой, удаляем текущий
+    vim.cmd("enew")
+    pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
+    return
+  end
+
+  -- Сначала переключаемся на другой листированный буфер,
+  -- чтобы окно не осталось без валидного буфера
+  for _, b in ipairs(listed) do
+    if b ~= bufnr then
+      vim.api.nvim_set_current_buf(b)
+      break
+    end
+  end
+
+  -- А теперь удаляем исходный
+  pcall(vim.api.nvim_buf_delete, bufnr, { force = false })
+end, { desc = "Закрыть буфер" })
+
+-- Закрыть все кроме текущего
+map("n", "<leader>xo", function()
+  local cur = vim.api.nvim_get_current_buf()
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if buf ~= cur and vim.bo[buf].buflisted then
+      vim.api.nvim_buf_delete(buf, { force = false })
+    end
+  end
+end, { desc = "Закрыть все кроме текущего" })

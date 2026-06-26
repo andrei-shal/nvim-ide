@@ -14,7 +14,7 @@ return {
       { "<leader>h", group = "Git", icon = icons.get({ desc = "git" }) },
       { "<leader>f", group = "Поиск", icon = icons.get({ desc = "telescope" }) },
       { "<leader>l", group = "LSP", icon = icons.get({ desc = "format" }) },
-      { "<leader>x", group = "Вкладки", icon = icons.get({ desc = "window" }) },
+      { "<leader>x", group = "Буферы", icon = icons.get({ desc = "window" }) },
       { "<leader>e", group = "Проводник", icon = icons.get({ desc = "file" }) }
     })
   end
