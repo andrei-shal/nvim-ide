@@ -13,9 +13,9 @@ return {
     local ViMode = {
       static = {
         mode_names = {
-          n = "NORMAL", i = "INSERT", c = "COMMAND", v = "VISUAL",
-          V = "V-LINE", ["\22"] = "V-BLOCK", s = "SELECT", S = "S-LINE",
-          ["\19"] = "S-BLOCK", R = "REPLACE", r = "REPLACE", t = "TERM",
+          n = "НОРМАЛ", i = "ВСТАВКА", c = "КОМАНДА", v = "ВИЗУАЛ",
+          V = "В-СТРОКА", ["\22"] = "В-БЛОК", s = "ВЫБОР", S = "С-СТРОКА",
+          ["\19"] = "С-БЛОК", R = "ЗАМЕНА", r = "ЗАМЕНА", t = "ТЕРМИНАЛ",
         },
         mode_colors = {
           n = "green", i = "blue", v = "cyan", V = "cyan",
@@ -89,9 +89,24 @@ return {
     }
 
     local LSPActive = {
-      condition = conditions.lsp_attached,
-      update = { "LspAttach", "LspDetach" },
-      provider = " ",
+      condition = function()
+        return #vim.lsp.get_clients({ bufnr = 0 }) > 0
+      end,
+      update = {
+        "LspAttach",
+        "LspDetach",
+        callback = vim.schedule_wrap(function()
+          vim.cmd("redrawstatus")
+        end),
+      },
+      provider = function()
+        local clients = vim.lsp.get_clients({ bufnr = 0 })
+        local names = {}
+        for _, client in ipairs(clients) do
+          table.insert(names, client.name)
+        end
+        return "  [" .. table.concat(names, " ") .. "] "
+      end,
       hl = { fg = "green", bold = true },
     }
 
@@ -137,6 +152,10 @@ return {
       FileFlags,
       Sep,
       GitBranch,
+      {
+        condition = conditions.lsp_attached,
+        provider = " ▐ ",
+      },
       LSPActive,
       Diagnostics,
       { provider = "%=" },
