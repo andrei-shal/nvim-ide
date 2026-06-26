@@ -7,7 +7,7 @@ Neovim-конфигурация с LSP, автодополнением, файл
 - Neovim >= 0.12
 - `tar` и `curl` в PATH (для установки парсеров treesitter)
 - C-компилятор (для сборки парсеров treesitter)
-- [Nerd Font](https://www.nerdfonts.com/) (для иконок в lualine, blink.cmp, neo-tree, bufferline)
+- [Nerd Font](https://www.nerdfonts.com/) (для иконок в blink.cmp, neo-tree, heirline)
 
 ## Плагины
 
@@ -20,10 +20,9 @@ Neovim-конфигурация с LSP, автодополнением, файл
 | [mason.nvim](https://github.com/mason-org/mason.nvim) | Установщик LSP-серверов |
 | [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Связка Mason и nvim-lspconfig |
 | [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | Файловое дерево |
-| [bufferline.nvim](https://github.com/akinsho/bufferline.nvim) | Панель вкладок |
+| [heirline.nvim](https://github.com/rebelot/heirline.nvim) | Статуслайн + панель вкладок (замена lualine + bufferline) |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Нечёткий поиск |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git-декорации в gutter |
-| [lualine.nvim](https://github.com/nvim-lualine/lualine.nvim) | Строка состояния |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | Подсказки по хоткеям |
 | [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Авто-закрытие скобок и кавычек |
 | [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Коллекция сниппетов |
@@ -77,14 +76,14 @@ Neovim-конфигурация с LSP, автодополнением, файл
 | `<leader>e` | Открыть проводник |
 | `<leader>ec` | Закрыть проводник |
 
-### Вкладки (Bufferline)
+### Буферы
 
 | Клавиша | Действие |
 |---------|----------|
-| `<leader><Left>` | Предыдущая вкладка |
-| `<leader><Right>` | Следующая вкладка |
-| `<leader>x` | Закрыть вкладку |
-| `<leader>xo` | Закрыть все кроме текущей |
+| `<leader><Left>` | Предыдущий буфер |
+| `<leader><Right>` | Следующий буфер |
+| `<leader>x` | Закрыть буфер |
+| `<leader>xo` | Закрыть все кроме текущего |
 
 ### Автодополнение (blink.cmp)
 

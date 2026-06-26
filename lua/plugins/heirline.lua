@@ -155,7 +155,7 @@ return {
         end
       end,
       provider = function(self)
-        return self.icon and (self.icon .. " ") or "  "
+        return "  " .. (self.icon and (self.icon .. " ") or "")
       end,
       hl = function(self)
         return self.icon_color and { fg = self.icon_color } or {}
@@ -166,7 +166,7 @@ return {
       provider = function(self)
         local name = vim.api.nvim_buf_get_name(self.bufnr)
         name = name == "" and "[No Name]" or vim.fn.fnamemodify(name, ":t")
-        return name
+        return name .. "  "
       end,
       hl = function(self)
         return { bold = self.is_active or self.is_visible }
@@ -215,12 +215,7 @@ return {
       TablineFileFlags,
     }
 
-    local TablineBufferBlock = utils.surround({ "   ", "   " }, function(self)
-      if self.is_active then
-        return utils.get_highlight("TabLineSel").bg
-      end
-      return utils.get_highlight("TabLine").bg
-    end, { TablineFileNameBlock })
+    local TablineBufferBlock = TablineFileNameBlock
 
     local BufferLine = utils.make_buflist(
       TablineBufferBlock,
