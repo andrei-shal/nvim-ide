@@ -134,7 +134,6 @@ map("n", "<leader><Right>", "<cmd>bnext<cr>", { desc = "Следующий бу�
 map("n", "<leader>x", function()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  -- Собираем листированные буферы через vim.fn
   local listed = {}
   for _, b in ipairs(vim.api.nvim_list_bufs()) do
     if vim.fn.buflisted(b) == 1 then
@@ -143,14 +142,11 @@ map("n", "<leader>x", function()
   end
 
   if #listed <= 1 then
-    -- Последний буфер: создаём пустой, удаляем текущий
     vim.cmd("enew")
     pcall(vim.api.nvim_buf_delete, bufnr, { force = true })
     return
   end
 
-  -- Сначала переключаемся на другой листированный буфер,
-  -- чтобы окно не осталось без валидного буфера
   for _, b in ipairs(listed) do
     if b ~= bufnr then
       vim.api.nvim_set_current_buf(b)
@@ -158,7 +154,6 @@ map("n", "<leader>x", function()
     end
   end
 
-  -- А теперь удаляем исходный
   pcall(vim.api.nvim_buf_delete, bufnr, { force = false })
 end, { desc = "Закрыть буфер" })
 

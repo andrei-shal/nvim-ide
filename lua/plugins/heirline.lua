@@ -13,9 +13,18 @@ return {
     local ViMode = {
       static = {
         mode_names = {
-          n = "󰘥 НАВИГАЦИЯ", i = "󰏫 РЕДАКТИР", c = "󰊕 КОМАНДА", v = "󰆣 ВЫДЕЛЕНИЕ",
-          V = "󰆣 ВЫД-СТРОК", ["\22"] = "󰆣 ВЫД-БЛОК", s = "󰆣 ВЫБОР", S = "󰆣 ВЫБ-СТРОК",
-          ["\19"] = "󰆣 ВЫБ-БЛОК", R = "󰜊 ЗАМЕНА", r = "󰜊 ЗАМЕНА", t = "󰆍 ТЕРМИНАЛ",
+          n = vim.fn.nr2char(0xe62b) .. " НАВИГАЦИЯ",
+          i = vim.fn.nr2char(0xf040) .. " РЕДАКТИР",
+          c = vim.fn.nr2char(0xf120) .. " КОМАНДА",
+          v = vim.fn.nr2char(0xf14a) .. " ВЫДЕЛЕНИЕ",
+          V = vim.fn.nr2char(0xf0db) .. " ВЫД-СТРОК",
+          ["\22"] = vim.fn.nr2char(0xf0c8) .. " ВЫД-БЛОК",
+          s = vim.fn.nr2char(0xf27a) .. " ВЫБОР",
+          S = vim.fn.nr2char(0xf27a) .. " ВЫБ-СТРОК",
+          ["\19"] = vim.fn.nr2char(0xf27a) .. " ВЫБ-БЛОК",
+          R = vim.fn.nr2char(0xf01e) .. " ЗАМЕНА",
+          r = vim.fn.nr2char(0xf01e) .. " ЗАМЕНА",
+          t = vim.fn.nr2char(0xf489) .. " ТЕРМИНАЛ",
         },
         mode_colors = {
           n = "green", i = "blue", v = "cyan", V = "cyan",
