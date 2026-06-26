@@ -15,7 +15,8 @@ return {
       { "<leader>f", group = "Поиск", icon = icons.get({ desc = "telescope" }) },
       { "<leader>l", group = "LSP", icon = icons.get({ desc = "format" }) },
       { "<leader>x", group = "Буферы", icon = icons.get({ desc = "window" }) },
-      { "<leader>e", group = "Проводник", icon = icons.get({ desc = "file" }) }
+      { "<leader>e", group = "Проводник", icon = icons.get({ desc = "file" }) },
+      { "<leader>t", group = "Терминал", icon = icons.get({ desc = "terminal" }) }
     })
   end
 }

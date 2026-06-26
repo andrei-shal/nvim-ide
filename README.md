@@ -20,7 +20,7 @@ Neovim-конфигурация с LSP, автодополнением, файл
 | [mason.nvim](https://github.com/mason-org/mason.nvim) | Установщик LSP-серверов |
 | [mason-lspconfig.nvim](https://github.com/mason-org/mason-lspconfig.nvim) | Связка Mason и nvim-lspconfig |
 | [neo-tree.nvim](https://github.com/nvim-neo-tree/neo-tree.nvim) | Файловое дерево |
-| [heirline.nvim](https://github.com/rebelot/heirline.nvim) | Статуслайн + панель вкладок (замена lualine + bufferline) |
+| [heirline.nvim](https://github.com/rebelot/heirline.nvim) | Статуслайн + панель вкладок. Режим Vim (рус.), иконки, LSP-серверы, git-ветка, диагностики |
 | [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) | Нечёткий поиск |
 | [gitsigns.nvim](https://github.com/lewis6991/gitsigns.nvim) | Git-декорации в gutter |
 | [which-key.nvim](https://github.com/folke/which-key.nvim) | Подсказки по хоткеям |
@@ -75,6 +75,13 @@ Neovim-конфигурация с LSP, автодополнением, файл
 |---------|----------|
 | `<leader>e` | Открыть проводник |
 | `<leader>ec` | Закрыть проводник |
+
+### Терминал
+
+| Клавиша | Действие |
+|---------|----------|
+| `<leader>t` | Открыть терминал в новой вкладке |
+| `Esc` (в терминале) | Выйти в normal mode |
 
 ### Буферы
 
