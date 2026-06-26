@@ -56,7 +56,7 @@ return {
         end
       end,
       provider = function(self)
-        return self.icon and (self.icon .. " ") or ""
+        return self.icon and (" " .. self.icon .. " ") or ""
       end,
       hl = function(self)
         return self.icon_color and { fg = self.icon_color } or {}
