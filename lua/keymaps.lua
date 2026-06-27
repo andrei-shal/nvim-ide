@@ -166,3 +166,8 @@ map("n", "<leader>xo", function()
     end
   end
 end, { desc = "Закрыть все кроме текущего" })
+
+-- Markdown, yaml, LaTeX превью (Markview)
+
+-- Переключить режим отображения
+map("n", "<leader>m", "<cmd>Markview toggle<cr>", { desc = "Переключить режим Markview" })
