@@ -2,6 +2,11 @@ local lombok_jar = vim.fn.stdpath("data") .. "/mason/packages/jdtls/lombok.jar"
 
 return {
   "neovim/nvim-lspconfig",
+  opts = {
+    diagnostics = {
+      virtual_text = false
+    }
+  },
   config = function()
     vim.env.JDTLS_JVM_ARGS = "-javaagent:" .. lombok_jar
 
