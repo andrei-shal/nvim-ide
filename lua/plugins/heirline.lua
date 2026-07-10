@@ -65,6 +65,8 @@ return {
 
     local FileName = {
       provider = function()
+        local ft = vim.bo.filetype
+        if ft == "neo-tree" then return "Проводник " end
         local name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":.")
         if name == "" then return "[No Name] " end
         return name .. " "

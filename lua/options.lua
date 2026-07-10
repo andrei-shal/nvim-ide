@@ -26,6 +26,9 @@ opt.smartcase = true
 -- 24-битные цвета
 opt.termguicolors = true
 
+-- Прятать командную строку когда неактивна
+opt.cmdheight = 0
+
 -- Колонка состояния строки
 opt.signcolumn = "yes"
 
