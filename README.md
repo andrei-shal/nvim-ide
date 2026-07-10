@@ -28,7 +28,7 @@ Neovim-конфигурация с LSP, автодополнением, файл
 | [nvim-autopairs](https://github.com/windwp/nvim-autopairs) | Авто-закрытие скобок и кавычек |
 | [markview.nvim](https://github.com/OXY2DEV/markview.nvim) | Превью Markdown / YAML / LaTeX прямо в буфере |
 | [friendly-snippets](https://github.com/rafamadriz/friendly-snippets) | Коллекция сниппетов |
-| [tokyonight.nvim](https://github.com/folke/tokyonight.nvim) | Цветовая схема TokyoNight |
+| [cyberdream.nvim](https://github.com/scottmckendry/cyberdream.nvim) | Цветовая схема Cyberdream |
 
 ## Хоткеи
 
