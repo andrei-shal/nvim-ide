@@ -99,6 +99,42 @@ return {
       hl = { fg = "red" },
     }
 
+    -- Счётчик правок относительно git: сразу видно объём того, что тронул агент
+    local GitDiff = {
+      condition = function()
+        local d = vim.b.gitsigns_status_dict
+        return d and ((d.added or 0) + (d.changed or 0) + (d.removed or 0)) > 0
+      end,
+      init = function(self)
+        self.status = vim.b.gitsigns_status_dict or {}
+      end,
+      update = { "User", pattern = "GitSignsUpdate", callback = vim.schedule_wrap(function()
+        vim.cmd("redrawstatus")
+      end) },
+      {
+        provider = function(self)
+          local n = self.status.added or 0
+          return n > 0 and (" +" .. n) or ""
+        end,
+        hl = { fg = "green" },
+      },
+      {
+        provider = function(self)
+          local n = self.status.changed or 0
+          return n > 0 and (" ~" .. n) or ""
+        end,
+        hl = { fg = "yellow" },
+      },
+      {
+        provider = function(self)
+          local n = self.status.removed or 0
+          return n > 0 and (" -" .. n) or ""
+        end,
+        hl = { fg = "red" },
+      },
+      { provider = " " },
+    }
+
     local LSPActive = {
       condition = function()
         return #vim.lsp.get_clients({ bufnr = 0 }) > 0
@@ -163,6 +199,7 @@ return {
       FileFlags,
       Sep,
       GitBranch,
+      GitDiff,
       {
         condition = conditions.lsp_attached,
         provider = " ▐ ",
