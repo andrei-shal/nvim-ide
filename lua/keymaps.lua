@@ -10,6 +10,47 @@ local function gs()
   return require("gitsigns")
 end
 
+-- База сравнения. По умолчанию — индекс: только при нём git позволяет
+-- применять и откатывать отдельные ханки.
+local bases = { nil, "HEAD", "HEAD~1" }
+local base_names = { "индекс", "HEAD", "HEAD~1" }
+local base_idx = 1
+
+-- Возвращает gitsigns, только если он следит за текущим буфером.
+-- Без этой проверки нажатие в окне проводника, в пустом буфере или в файле
+-- вне git просто ничего не делало — молча, и выглядело как «git сломан».
+local function gs_buf()
+  if vim.b.gitsigns_status_dict ~= nil or vim.b.gitsigns_head ~= nil then
+    return require("gitsigns")
+  end
+
+  local ft = vim.bo.filetype
+  if ft == "neo-tree" then
+    vim.notify("Это окно проводника — git-команды работают в окне файла (<leader>e вернёт в редактор)",
+      vim.log.levels.WARN)
+  elseif vim.bo.buftype ~= "" then
+    vim.notify("Это служебное окно, а не файл", vim.log.levels.WARN)
+  elseif vim.api.nvim_buf_get_name(0) == "" then
+    vim.notify("Буфер без файла — открой файл", vim.log.levels.WARN)
+  else
+    vim.notify("Файл вне git-репозитория либо ещё не проиндексирован", vim.log.levels.WARN)
+  end
+  return nil
+end
+
+-- Применение и откат ханков требуют, чтобы базой был индекс.
+local function stageable()
+  if base_idx ~= 1 then
+    vim.notify(
+      "База диффа — " .. base_names[base_idx] .. ", при ней git не даёт менять ханки.\n"
+        .. "Верни базу на «индекс» через <leader>gB",
+      vim.log.levels.WARN
+    )
+    return false
+  end
+  return true
+end
+
 --------------------------------------------------------------------------
 -- Файлы и окна
 --------------------------------------------------------------------------
@@ -41,15 +82,18 @@ map("n", "<Esc>", "<cmd>nohlsearch<cr>", { desc = "Снять подсветку
 -- Дифф текущего файла относительно HEAD, вертикальным сплитом.
 -- Именно HEAD, а не индекс: если агент уже сделал git add, дифф всё равно виден.
 map("n", "<leader>gd", function()
-  gs().diffthis("HEAD")
+  local g = gs_buf()
+  if g then g.diffthis("HEAD") end
 end, { desc = "Дифф файла vs HEAD" })
 
 -- Дифф относительно индекса: что ещё не застейджено
 map("n", "<leader>gi", function()
-  gs().diffthis()
+  local g = gs_buf()
+  if g then g.diffthis() end
 end, { desc = "Дифф файла vs индекс" })
 
--- Панель со всеми изменёнными файлами: полный changeset агента
+-- Панель со всеми изменёнными файлами: полный changeset агента.
+-- Работает из любого окна — буфер не нужен.
 map("n", "<leader>gD", "<cmd>DiffviewOpen<cr>", { desc = "Панель диффа (все файлы)" })
 
 -- Дифф всей ветки относительно main/master: ревью работы агента целиком
@@ -79,7 +123,8 @@ local function nav_hunk(direction)
       vim.cmd.normal({ direction == "next" and "]c" or "[c", bang = true })
       return
     end
-    gs().nav_hunk(direction, { wrap = true, preview = false })
+    local g = gs_buf()
+    if g then g.nav_hunk(direction, { wrap = true, preview = false }) end
   end
 end
 
@@ -90,36 +135,44 @@ map("n", "[c", nav_hunk("prev"), { desc = "Предыдущее изменени
 
 -- Превью ханка прямо в буфере, без отдельного окна
 map("n", "<leader>gp", function()
-  gs().preview_hunk_inline()
+  local g = gs_buf()
+  if g then g.preview_hunk_inline() end
 end, { desc = "Превью изменения инлайн" })
 
 -- Применить / откатить ханк. В visual-режиме — только выделенные строки.
 map("n", "<leader>gs", function()
-  gs().stage_hunk()
+  local g = gs_buf()
+  if g and stageable() then g.stage_hunk() end
 end, { desc = "Применить изменение (stage)" })
 
 map("v", "<leader>gs", function()
-  gs().stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+  local g = gs_buf()
+  if g and stageable() then g.stage_hunk({ vim.fn.line("."), vim.fn.line("v") }) end
 end, { desc = "Применить выделенное (stage)" })
 
 map("n", "<leader>gr", function()
-  gs().reset_hunk()
+  local g = gs_buf()
+  if g and stageable() then g.reset_hunk() end
 end, { desc = "Откатить изменение" })
 
 map("v", "<leader>gr", function()
-  gs().reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+  local g = gs_buf()
+  if g and stageable() then g.reset_hunk({ vim.fn.line("."), vim.fn.line("v") }) end
 end, { desc = "Откатить выделенное" })
 
 map("n", "<leader>gu", function()
-  gs().undo_stage_hunk()
+  local g = gs_buf()
+  if g and stageable() then g.undo_stage_hunk() end
 end, { desc = "Отменить stage" })
 
 map("n", "<leader>gS", function()
-  gs().stage_buffer()
+  local g = gs_buf()
+  if g and stageable() then g.stage_buffer() end
 end, { desc = "Применить весь файл" })
 
 map("n", "<leader>gR", function()
-  gs().reset_buffer()
+  local g = gs_buf()
+  if g and stageable() then g.reset_buffer() end
 end, { desc = "Откатить весь файл" })
 
 -- Режим ревью: подсветка изменённых строк целиком + посимвольная разница
@@ -127,38 +180,48 @@ end, { desc = "Откатить весь файл" })
 -- держать это включённым в переписанном агентом файле нечитаемо.
 local review_mode = false
 map("n", "<leader>gv", function()
+  local g = gs_buf()
+  if not g then return end
   review_mode = not review_mode
-  local g = gs()
   pcall(g.toggle_linehl, review_mode)
   pcall(g.toggle_word_diff, review_mode)
   pcall(g.toggle_deleted, review_mode)
   vim.notify("Режим ревью: " .. (review_mode and "включён" or "выключен"))
 end, { desc = "Режим ревью (подсветка правок)" })
 
--- База сравнения. По умолчанию — индекс (только так работает stage_hunk).
--- HEAD нужен, когда агент уже сделал git add и хочется видеть всё разом.
-local bases = { nil, "HEAD", "HEAD~1" }
-local base_names = { "индекс", "HEAD", "HEAD~1" }
-local base_idx = 1
+-- Смена базы. HEAD нужен, когда агент уже сделал git add и хочется видеть
+-- всё разом; при этом ханки становятся доступны только для чтения.
 map("n", "<leader>gB", function()
+  local g = gs_buf()
+  if not g then return end
   base_idx = base_idx % #base_names + 1
-  gs().change_base(bases[base_idx], true)
-  local hint = base_idx == 1 and "" or " (stage/reset ханков недоступны)"
-  vim.notify("База диффа: " .. base_names[base_idx] .. hint)
+  g.change_base(bases[base_idx], true)
+  if base_idx == 1 then
+    vim.notify("База диффа: индекс — применение и откат ханков снова доступны")
+  else
+    vim.notify(
+      "База диффа: " .. base_names[base_idx] .. " — только просмотр, ханки менять нельзя",
+      vim.log.levels.WARN
+    )
+  end
 end, { desc = "Сменить базу диффа" })
 
 -- Blame
 map("n", "<leader>gl", function()
-  gs().blame_line({ full = true })
+  local g = gs_buf()
+  if g then g.blame_line({ full = true }) end
 end, { desc = "Blame строки" })
 
 map("n", "<leader>gL", function()
-  gs().blame()
+  local g = gs_buf()
+  if g then g.blame() end
 end, { desc = "Blame всего файла" })
 
 -- Все ханки репозитория одним списком: полный перечень того, что тронул агент
 map("n", "<leader>gQ", function()
-  gs().setqflist("all", { open = false }, function()
+  local g = gs_buf()
+  if not g then return end
+  g.setqflist("all", { open = false }, function()
     vim.cmd("Trouble qflist open")
   end)
 end, { desc = "Все изменения репозитория списком" })
@@ -321,8 +384,21 @@ map("n", "<leader>tv", "<cmd>ToggleTerm direction=vertical<cr>", { desc = "Те�
 -- Файловое дерево
 --------------------------------------------------------------------------
 
-map("n", "<leader>e", "<cmd>Neotree toggle<cr>", { desc = "Проводник" })
+-- Переход в проводник и обратно.
+-- Именно focus, а не toggle: проводник открыт почти всегда, и toggle из окна
+-- файла его закрывал вместо того, чтобы перейти в него.
+map("n", "<leader>e", function()
+  if vim.bo.filetype == "neo-tree" then
+    vim.cmd("wincmd p")
+  else
+    vim.cmd("Neotree focus")
+  end
+end, { desc = "Проводник (туда и обратно)" })
+
 map("n", "<leader>E", "<cmd>Neotree reveal<cr>", { desc = "Показать файл в проводнике" })
+-- Закрыть проводник — q внутри самого проводника (штатный хоткей neo-tree).
+-- Отдельный <leader>e* здесь не вешаем: он сделал бы <leader>e тормозящим
+-- на timeoutlen из-за общего префикса.
 
 --------------------------------------------------------------------------
 -- Тумблеры
