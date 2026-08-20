@@ -10,13 +10,37 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
--- Автооткрытие проводника при старте
+-- Автооткрытие проводника.
+-- При запуске без аргументов проводник не открывается: там показывается
+-- стартовый экран, и дерево рядом с ним только зажимает его. Дерево
+-- появляется, как только открыт первый настоящий файл.
+local function show_tree()
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(0)) do
+    if vim.bo[vim.api.nvim_win_get_buf(win)].filetype == "neo-tree" then
+      return
+    end
+  end
+  pcall(vim.cmd, "Neotree show")
+end
+
 vim.api.nvim_create_autocmd("UIEnter", {
   group = augroup("neotree_start"),
   once = true,
   callback = function()
-    vim.cmd("Neotree show")
-  end
+    if vim.fn.argc() > 0 then
+      show_tree()
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  group = augroup("neotree_on_file"),
+  once = true,
+  callback = function(args)
+    if vim.bo[args.buf].buftype == "" and vim.api.nvim_buf_get_name(args.buf) ~= "" then
+      vim.schedule(show_tree)
+    end
+  end,
 })
 
 --------------------------------------------------------------------------

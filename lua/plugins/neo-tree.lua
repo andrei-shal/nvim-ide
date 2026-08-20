@@ -9,6 +9,12 @@ return {
   lazy = false,
   opts = {
     close_if_last_window = true,
+
+    -- Корневая строка показывала обрезанный абсолютный путь и занимала место.
+    -- Имя проекта теперь выводится в панели вкладок над деревом.
+    hide_root_node = true,
+    retain_hidden_root_indent = false,
+
     filesystem = {
       follow_current_file = {
         enabled = true,

@@ -20,6 +20,7 @@ return {
       { "<leader>t", group = "Терминал", icon = icons.get({ desc = "terminal" }) },
       { "<leader>u", group = "Тумблеры", icon = icons.get({ desc = "toggle" }) },
       { "<leader>e", desc = "Проводник", icon = icons.get({ desc = "file" }) },
+      { "<leader>ut", desc = "Выбрать тему", icon = icons.get({ desc = "color" }) },
     })
   end
 }

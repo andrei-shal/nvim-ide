@@ -431,6 +431,23 @@ map("n", "<leader>ub", function()
   gs().toggle_current_line_blame()
 end, { desc = "Тумблер blame строки" })
 
+-- Выбор темы с живым предпросмотром, выбранная запоминается между сессиями
+map("n", "<leader>ut", function()
+  require("colorscheme").pick()
+end, { desc = "Выбрать тему" })
+
+map("n", "<leader>ug", function()
+  -- enable()/disable() сами ведут поле enabled, выставлять его руками нельзя:
+  -- enable() выходит сразу, если считает себя уже включённым
+  local indent = require("snacks").indent
+  if indent.enabled then
+    indent.disable()
+  else
+    indent.enable()
+  end
+  vim.notify("Отступные линии: " .. (indent.enabled and "включены" or "выключены"))
+end, { desc = "Тумблер отступных линий" })
+
 --------------------------------------------------------------------------
 -- Markdown, yaml, LaTeX превью (Markview)
 --------------------------------------------------------------------------

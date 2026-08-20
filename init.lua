@@ -24,3 +24,7 @@ require("lazy").setup({
 require("options")
 require("keymaps")
 require("autocmds")
+
+-- Тема применяется после загрузки плагинов: берётся та, что была выбрана
+-- в прошлый раз через <leader>ut
+require("colorscheme").apply()
