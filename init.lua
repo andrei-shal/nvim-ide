@@ -1,4 +1,5 @@
 vim.g.mapleader = " "
+vim.g.maplocalleader = "\\"
 
 -- bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -23,3 +24,7 @@ require("lazy").setup({
 require("options")
 require("keymaps")
 require("autocmds")
+
+-- Тема применяется после загрузки плагинов: берётся та, что была выбрана
+-- в прошлый раз через <leader>ut
+require("colorscheme").apply()

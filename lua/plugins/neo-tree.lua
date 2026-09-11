@@ -9,11 +9,22 @@ return {
   lazy = false,
   opts = {
     close_if_last_window = true,
+
+    -- Корневая строка показывала обрезанный абсолютный путь и занимала место.
+    -- Имя проекта теперь выводится в панели вкладок над деревом.
+    hide_root_node = true,
+    retain_hidden_root_indent = false,
+
     filesystem = {
       follow_current_file = {
-        enabled = true
+        enabled = true,
       },
-      use_libuv_file_watcher = true
+      use_libuv_file_watcher = true,
+      filtered_items = {
+        hide_dotfiles = false,
+        hide_gitignored = true,
+        hide_by_name = { "node_modules", "__pycache__", ".git" },
+      },
     },
 
     default_component_configs = {
