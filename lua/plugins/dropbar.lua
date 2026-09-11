@@ -11,7 +11,13 @@ return {
           return false
         end
         -- только обычные файловые окна: без плавающих, проводника и панелей
-        if vim.api.nvim_win_get_config(win).relative ~= "" then
+        if vim.api.nvim_win_get_config(win).relative ~= "" or vim.fn.win_gettype(win) ~= "" then
+          return false
+        end
+        -- Не лезть в окна диффа и туда, где winbar уже занят (diffview,
+        -- подписи «было / стало»). Иначе в диффе строка крошек оказывалась
+        -- только над рабочей копией, и половины сдвигались на строку.
+        if vim.wo[win].diff or vim.wo[win].winbar ~= "" then
           return false
         end
         if vim.bo[buf].buftype ~= "" then

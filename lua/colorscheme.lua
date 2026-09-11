@@ -1,6 +1,12 @@
 -- Выбор темы с сохранением между сессиями.
--- Выбранная тема пишется в stdpath("state")/colorscheme при выходе и
--- применяется при следующем запуске.
+--
+-- Сохраняется имя, переданное в :colorscheme (<amatch> события ColorScheme),
+-- а не vim.g.colors_name: rose-pine и kanagawa пишут туда имя без варианта,
+-- и выбранная rose-pine-moon после перезапуска превращалась в rose-pine.
+--
+-- Пишется только при смене темы уже после старта, а не на выходе. Иначе
+-- любой запуск, где сохранённая тема не применилась и сработал откат на
+-- cyberdream, молча затирал выбор пользователя.
 local M = {}
 
 local state_file = vim.fn.stdpath("state") .. "/colorscheme"
@@ -25,18 +31,20 @@ function M.apply(name)
   end
 end
 
-function M.save()
-  pcall(vim.fn.writefile, { vim.g.colors_name or fallback }, state_file)
-end
-
 --- Выбор темы с живым предпросмотром.
 function M.pick()
   require("telescope.builtin").colorscheme({ enable_preview = true })
 end
 
-vim.api.nvim_create_autocmd("VimLeavePre", {
+vim.api.nvim_create_autocmd("ColorScheme", {
   group = vim.api.nvim_create_augroup("colorscheme_persist", { clear = true }),
-  callback = M.save,
+  callback = function(args)
+    -- тема, применённая при старте, — это уже сохранённая (или откат)
+    if vim.v.vim_did_enter ~= 1 or not args.match or args.match == "" then
+      return
+    end
+    pcall(vim.fn.writefile, { args.match }, state_file)
+  end,
 })
 
 return M

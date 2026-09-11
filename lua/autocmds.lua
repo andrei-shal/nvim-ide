@@ -117,3 +117,85 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end
   end,
 })
+
+--------------------------------------------------------------------------
+-- Подписи «было / стало» над окнами диффа
+--
+-- Строка хлебных крошек dropbar есть только у рабочей копии, а у версии из
+-- git её нет. Из-за этого половины диффа сдвигались на одну строку, и
+-- одинаковые строки никогда не стояли рядом: прокрутка связана, но выглядит
+-- рассинхронизированной. Даём winbar обоим окнам — высоты равны, а заодно
+-- видно, где старая версия, а где новая.
+-- diffview подписывает свои окна сам, его вкладки не трогаем.
+--------------------------------------------------------------------------
+
+local function diff_label(buf)
+  local name = vim.api.nvim_buf_get_name(buf)
+  if name:match("^gitsigns://") then
+    -- имя вида ".../.git//HEAD:path" или ".../.git//:0:path" (индекс)
+    local tail = name:match("//([^/]*:.*)$") or vim.fn.fnamemodify(name, ":t")
+    local rev, file = tail:match("^:0:(.*)$"), nil
+    if rev then
+      rev, file = "индекс", rev
+    else
+      rev, file = tail:match("^(.-):(.*)$")
+    end
+    return "%#DiffDelete#  было %*  " .. (rev or "git") .. " · " .. (file or tail)
+  end
+  return "%#DiffAdd#  стало %*  " .. vim.fn.fnamemodify(name, ":.")
+end
+
+local function is_diffview_tab(wins)
+  for _, w in ipairs(wins) do
+    local b = vim.api.nvim_win_get_buf(w)
+    if vim.api.nvim_buf_get_name(b):match("^diffview://") or vim.bo[b].filetype:match("^Diffview") then
+      return true
+    end
+  end
+  return false
+end
+
+local function sync_diff_winbars()
+  local wins = vim.api.nvim_tabpage_list_wins(0)
+  if is_diffview_tab(wins) then
+    return
+  end
+  for _, win in ipairs(wins) do
+    if vim.api.nvim_win_is_valid(win) and vim.api.nvim_win_get_config(win).relative == "" then
+      local buf = vim.api.nvim_win_get_buf(win)
+      if vim.wo[win].diff then
+        if vim.w[win].pre_diff_winbar == nil then
+          vim.w[win].pre_diff_winbar = vim.wo[win].winbar
+        end
+        local label = diff_label(buf)
+        if vim.wo[win].winbar ~= label then
+          vim.wo[win].winbar = label
+        end
+        -- служебный буфер с версией из git не должен висеть во вкладках
+        if vim.api.nvim_buf_get_name(buf):match("^gitsigns://") and vim.bo[buf].buflisted then
+          vim.bo[buf].buflisted = false
+          vim.cmd.redrawtabline()
+        end
+      elseif vim.w[win].pre_diff_winbar ~= nil then
+        -- дифф выключен — вернуть то, что было (крошки dropbar)
+        vim.wo[win].winbar = vim.w[win].pre_diff_winbar
+        vim.w[win].pre_diff_winbar = nil
+      end
+    end
+  end
+end
+
+vim.api.nvim_create_autocmd("OptionSet", {
+  group = augroup("diff_winbar_opt"),
+  pattern = "diff",
+  callback = function()
+    vim.schedule(sync_diff_winbars)
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "DiffUpdated", "WinClosed", "BufWinEnter" }, {
+  group = augroup("diff_winbar_events"),
+  callback = function()
+    vim.schedule(sync_diff_winbars)
+  end,
+})

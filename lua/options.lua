@@ -78,6 +78,10 @@ opt.diffopt:remove({ "linematch:40" })
 opt.diffopt:append({ "linematch:60", "algorithm:histogram" })
 opt.fillchars:append({ diff = "╱" })
 
+-- В окнах диффа связывать и горизонтальную прокрутку: wrap выключен, и
+-- длинные строки иначе уезжали только в одной половине
+opt.scrollopt:append("hor")
+
 -- Динамическое обновление ошибок
 vim.diagnostic.config({
   update_in_insert = true
